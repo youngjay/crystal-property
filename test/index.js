@@ -66,9 +66,6 @@ describe('array', function() {
             defaultValue: defaultValue
         }))
 
-        assert.deepEqual(p.get(), defaultValue)
-
-
         p.reset();
 
         p.set([123])
