@@ -133,3 +133,31 @@ describe('typed array', function() {
 
 
 })
+
+// describe('cascade', function() {
+//     it('should cascade', function() {
+
+//         var A = Property.Composite.extend({
+//             mapping: {
+//                 x: Property.Plain
+//             }
+//         });
+
+//         var C = Property.Composite.extend({
+//             mapping: {
+//                 a: A,
+//                 b: Property.Composite.extend({
+//                     mapping: {
+//                         c: Property.TypedArray.extend({
+//                             mapping: A
+//                         })
+//                     }
+//                 })
+//             }
+//         })
+
+//         Property.cascade(C, function(path) {
+//             console.log(path)
+//         })
+//     })
+// })
