@@ -79,18 +79,38 @@ describe('array', function() {
 })
 
 describe('composite', function() {
+    it('should not affect parent', function() {
+        var A = Property.Composite.extend().mapping({
+            a: Property.Plain
+        });
+
+        var B = A.extend().mapping({
+            b: Property.Plain
+        });
+
+
+        var a = new A();
+
+        assert.deepEqual(a.get(), {
+            a: null
+        })
+
+        var b = new B();
+
+        assert.deepEqual(b.get(), {
+            a: null,
+            b: null
+        })
+    })
+
     it('should get / set', function() {
         var v = '123d';
 
-        var p = new (Property.Composite.extend({
-            mapping: {
-                a: Property.Plain,
-                b: Property.Composite.extend({
-                    mapping: {
-                        c: Property.Plain
-                    }
-                })
-            }
+        var p = new (Property.Composite.extend().mapping({
+            a: Property.Plain,
+            b: Property.Composite.extend().mapping({
+                c: Property.Plain
+            })
         }))
 
         p.set({
@@ -120,44 +140,11 @@ describe('typed array', function() {
             }
         })
 
-        var A = Property.TypedArray.extend({
-            mapping: C
-        })
+        var A = Property.TypedArray.extend().mapping(C)
 
         var a = new A();
         a.set([1,2])
 
         assert.deepEqual(a.get(), [2,3])
-
     })
-
-
 })
-
-// describe('cascade', function() {
-//     it('should cascade', function() {
-
-//         var A = Property.Composite.extend({
-//             mapping: {
-//                 x: Property.Plain
-//             }
-//         });
-
-//         var C = Property.Composite.extend({
-//             mapping: {
-//                 a: A,
-//                 b: Property.Composite.extend({
-//                     mapping: {
-//                         c: Property.TypedArray.extend({
-//                             mapping: A
-//                         })
-//                     }
-//                 })
-//             }
-//         })
-
-//         Property.cascade(C, function(path) {
-//             console.log(path)
-//         })
-//     })
-// })
