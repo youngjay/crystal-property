@@ -42,54 +42,6 @@ var generate = function(o) {
     });
 };
 
-var cascade = function(PropertyClass, iterator, paths) {
-    if (!paths) {
-        paths = [];
-    }
-
-    iterator(paths, PropertyClass);
-
-    if (PropertyClass.mapping) {
-        var mapping = PropertyClass.mapping();
-        if (isPropertyClass(mapping)) {
-            cascade(mapping, iterator, paths.concat(['mapping']));
-        }
-        else {
-            _.forEach(mapping, function(SubPropertyClass, key) {
-                cascade(SubPropertyClass, iterator, paths.concat([key]));
-            });
-        }
-    }
-};
-
-var mix = function(PropertyClass, object) {
-    if (PropertyClass.mapping) {
-        if (object['.']) {
-            PropertyClass.mix(object['.']);
-        }
-
-        var mapping = PropertyClass.mapping();
-
-        // typed array
-        if (isPropertyClass(mapping)) {
-            mix(mapping, object['mapping']);
-        }
-        // composite
-        else {
-            _.forEach(object, function(o, key) {
-                // already mapped above
-                if (key !== '.' && mapping[key]) {
-                    mix(mapping[key], o);
-                }
-            })
-        }
-    }
-    else {
-        PropertyClass.mix(object);
-    };
-};
-
-
 module.exports = {
 
     Plain: Plain,
@@ -98,8 +50,6 @@ module.exports = {
     TypedArray: TypedArray,
     Composite: Composite,
 
-    generate: generate,
-    cascade: cascade,
-    mix: mix,
+    generate: generate
 };
 
