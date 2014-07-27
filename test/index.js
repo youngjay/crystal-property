@@ -152,12 +152,38 @@ describe('generate', function() {
 
         var m = new Model();
 
+        // Property.mix(Property.generate({
+        //     dealGroupId: 0,
+        //     a: {
+        //         b: 1
+        //     },
+        //     aa: null,
+        //     records: [],
+        //     items: [{
+        //         dealId: 1,
+        //         shops: [],
+        //         title: 'defaultTile'
+        //     }]
+        // }), {
+        //     a: {
+        //         b: {
+        //             c:
+        //         }
+        //     },
+
+        //     aa: {
+        //         b: {
+        //             c:
+        //         }
+        //     }
+        // })
+
         assert.deepEqual(m.get(), {
             dealGroupId: 0,
             items: []
         })
 
-        
+
 
         m.set({
             dealGroupId: 0,
