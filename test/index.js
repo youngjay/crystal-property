@@ -2,18 +2,6 @@ var Property = require('../')
 var assert = require('assert');
 var ko = require('knockout');
 
-// describe('abstract', function() {
-//     var p;
-//     beforeEach(function() {
-//         p = new Property.Abstract();
-//     })
-
-//     it('should have enabled visible activated', function() {
-//         assert.equal(ko.isObservable(p.enabled), true)
-//         assert.equal(ko.isObservable(p.visible), true)
-//         assert.equal(ko.isObservable(p.activated), true)
-//     })
-// })
 
 describe('plain', function() {
     var p;
@@ -146,5 +134,54 @@ describe('typed array', function() {
         a.set([1,2])
 
         assert.deepEqual(a.get(), [2,3])
+    })
+})
+
+
+describe('generate', function() {
+    it('should generate with config', function() {
+
+        var Model = Property.generate({
+            dealGroupId: 0,
+            items: [{
+                dealId: 1,
+                shops: [],
+                title: 'defaultTile'
+            }]
+        });
+
+        var m = new Model();
+
+        assert.deepEqual(m.get(), {
+            dealGroupId: 0,
+            items: []
+        })
+
+        
+
+        m.set({
+            dealGroupId: 0,
+            items: [{
+                dealId: 1,
+                shops: [],
+                title: 'defaultTile'
+            }, {
+                dealId: 2
+            }]
+        })
+
+        assert.deepEqual(m.get(), {
+            dealGroupId: 0,
+            items: [{
+                dealId: 1,
+                shops: [],
+                title: 'defaultTile'
+            }, {
+                shops: [],
+                title: 'defaultTile',
+
+                dealId: 2
+            }]
+        })
     })
 })
