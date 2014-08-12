@@ -1,6 +1,7 @@
 var Property = require('../')
 var assert = require('assert');
 var ko = require('knockout');
+var _ = require('lodash')
 
 
 describe('plain', function() {
@@ -11,9 +12,9 @@ describe('plain', function() {
 
     it('should get / set', function() {
         var v = '123d';
-        p.set(v);
-        assert.equal(p.get(), v)
-    })
+        p.prop('value', v);
+        assert.equal(p.prop('value'), v)
+    });
 })
 
 describe('number', function() {
@@ -24,84 +25,30 @@ describe('number', function() {
 
     it('set null when invalid number', function() {
         var v = '123d';
-        p.set(v);
-        assert.equal(p.get(), null)
+        p.prop('value', v);
+        assert.equal(p.prop('value'), null)
     })
 
     it('set correct when valid number', function() {
         var v = '123.12';
-        p.set(v);
-        assert.equal(p.get(), v)
+        p.prop('value', v);
+        assert.equal(p.prop('value'), v)
     })
 })
 
-describe('array', function() {
-    var p;
-    beforeEach(function() {
-        p = new Property.Array();
-    })
-
-    it('should get / set', function() {
-        var v = [1,2];
-        p.set(v);
-        assert.deepEqual(p.get(), v)
-    })
-
-    it('reset can invoke multiple times', function() {
-        var defaultValue = [1,2,3]
-
-        p = new (Property.Array.extend({
-            defaultValue: defaultValue
-        }))
-
-        p.reset();
-
-        p.set([123])
-
-        p.reset();
-
-        assert.deepEqual(p.get(), defaultValue)
-
-
-    })
-})
-
-describe('composite', function() {
-    it('should not affect parent', function() {
-        var A = Property.Composite.extend().mapping({
-            a: Property.Plain
-        });
-
-        var B = A.extend().mapping({
-            b: Property.Plain
-        });
-
-
-        var a = new A();
-
-        assert.deepEqual(a.get(), {
-            a: null
-        })
-
-        var b = new B();
-
-        assert.deepEqual(b.get(), {
-            a: null,
-            b: null
-        })
-    })
-
+describe('map', function() {
     it('should get / set', function() {
         var v = '123d';
 
-        var p = new (Property.Composite.extend().mapping({
+        var p = new (_.extend(Property.Map.extend(), {
             a: Property.Plain,
-            b: Property.Composite.extend().mapping({
+            b: _.extend(Property.Map.extend(), {
                 c: Property.Plain
             })
-        }))
+        }));
 
-        p.set({
+
+        p.prop('value', {
             a: 2,
             b: {
                 c: 3
@@ -109,7 +56,7 @@ describe('composite', function() {
             do_not_set: 1
         })
 
-        assert.deepEqual(p.get(), {
+        assert.deepEqual(p.prop('value'), {
             a: 2,
             b: {
                 c: 3
@@ -119,95 +66,18 @@ describe('composite', function() {
     })
 })
 
-describe('typed array', function() {
+describe('array', function() {
 
     it('should get / set', function() {
-        var C = Property.Number.extend({
-            get: function() {
-                return this.value() + 1;
-            }
-        })
+        var C = Property.Number;
 
-        var A = Property.TypedArray.extend().mapping(C)
+        var A = _.extend(Property.Array.extend(), {
+            element: C
+        })
 
         var a = new A();
-        a.set([1,2])
+        a.prop('value', [1,2])
 
-        assert.deepEqual(a.get(), [2,3])
-    })
-})
-
-
-describe('generate', function() {
-    it('should generate with config', function() {
-
-        var Model = Property.generate({
-            dealGroupId: 0,
-            items: [{
-                dealId: 1,
-                shops: [],
-                title: 'defaultTile'
-            }]
-        });
-
-        var m = new Model();
-
-        // Property.mix(Property.generate({
-        //     dealGroupId: 0,
-        //     a: {
-        //         b: 1
-        //     },
-        //     aa: null,
-        //     records: [],
-        //     items: [{
-        //         dealId: 1,
-        //         shops: [],
-        //         title: 'defaultTile'
-        //     }]
-        // }), {
-        //     a: {
-        //         b: {
-        //             c:
-        //         }
-        //     },
-
-        //     aa: {
-        //         b: {
-        //             c:
-        //         }
-        //     }
-        // })
-
-        assert.deepEqual(m.get(), {
-            dealGroupId: 0,
-            items: []
-        })
-
-
-
-        m.set({
-            dealGroupId: 0,
-            items: [{
-                dealId: 1,
-                shops: [],
-                title: 'defaultTile'
-            }, {
-                dealId: 2
-            }]
-        })
-
-        assert.deepEqual(m.get(), {
-            dealGroupId: 0,
-            items: [{
-                dealId: 1,
-                shops: [],
-                title: 'defaultTile'
-            }, {
-                shops: [],
-                title: 'defaultTile',
-
-                dealId: 2
-            }]
-        })
+        assert.deepEqual(a.prop('value'), [1, 2])
     })
 })
