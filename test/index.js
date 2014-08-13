@@ -12,8 +12,8 @@ describe('plain', function() {
 
     it('should get / set', function() {
         var v = '123d';
-        p.prop('value', v);
-        assert.equal(p.prop('value'), v)
+        p.observable('value', v);
+        assert.equal(p.observable('value'), v)
     });
 })
 
@@ -25,14 +25,14 @@ describe('number', function() {
 
     it('set null when invalid number', function() {
         var v = '123d';
-        p.prop('value', v);
-        assert.equal(p.prop('value'), null)
+        p.observable('value', v);
+        assert.equal(p.observable('value'), null)
     })
 
     it('set correct when valid number', function() {
         var v = '123.12';
-        p.prop('value', v);
-        assert.equal(p.prop('value'), v)
+        p.observable('value', v);
+        assert.equal(p.observable('value'), v)
     })
 })
 
@@ -48,7 +48,7 @@ describe('map', function() {
         }));
 
 
-        p.prop('value', {
+        p.observable('value', {
             a: 2,
             b: {
                 c: 3
@@ -56,7 +56,7 @@ describe('map', function() {
             do_not_set: 1
         })
 
-        assert.deepEqual(p.prop('value'), {
+        assert.deepEqual(p.observable('value'), {
             a: 2,
             b: {
                 c: 3
@@ -76,8 +76,8 @@ describe('array', function() {
         })
 
         var a = new A();
-        a.prop('value', [1,2])
+        a.observable('value', [1,2])
 
-        assert.deepEqual(a.prop('value'), [1, 2])
+        assert.deepEqual(a.observable('value'), [1, 2])
     })
 })
